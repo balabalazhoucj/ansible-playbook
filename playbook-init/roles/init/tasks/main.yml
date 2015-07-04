@@ -1,10 +1,13 @@
 ---
 - name: download 163 repos
   get_url: url=http://mirrors.163.com/.help/CentOS6-Base-163.repo dest=/etc/yum.repos.d/CentOS-Base.repo force=yes
+
 - name: download epel repos
   yum: name=http://ftp.sjtu.edu.cn/fedora/epel/6/i386/epel-release-6-8.noarch.rpm state=present
+
 - name: pgrade all packages
   yum: name=* state=latest
+
 - name: install Visual software
   yum: name={{ item }} state=latest
   with_items:
@@ -18,10 +21,12 @@
     - tree
     - parted
     - vim
+
 - name: services disabled level 3
   shell: for a in `chkconfig --list | grep 3:on|awk '{print $1}'`;do chkconfig --level 3 $a off;done
   tags:
     - level
+
 - name: services enabled crond network rsyslog sshd sysstat
   service: name={{ item }} enabled=yes runlevel=3
   with_items:
@@ -32,6 +37,7 @@
     - sysstat
   tags:
     - levelup
+
 - name: config vimrc
   copy: src=vimrc dest=/root/.vimrc
   tags:
