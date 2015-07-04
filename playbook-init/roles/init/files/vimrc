@@ -1,0 +1,4 @@
+set ts=4
+set fencs=utf-8
+set t_Co=256
+syntax on
