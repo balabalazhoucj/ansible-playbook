@@ -5,7 +5,7 @@
 - name: download epel repos
   yum: name=http://ftp.sjtu.edu.cn/fedora/epel/6/i386/epel-release-6-8.noarch.rpm state=present
 
-- name: pgrade all packages
+- name: 系统更新 
   yum: name=* state=latest
 
 - name: install Visual software
@@ -21,16 +21,13 @@
     - tree
     - parted
     - vim
+    - libselinux-python
 
-- name: sync time
+- name: 时间同步
   cron: name="sync time" minute="*/5" job="/usr/sbin/ntpdate time.windows.com > /dev/null 2>&1"
-  tags:
-    - cron
 
 - name: services disabled level 3
   shell: for a in `chkconfig --list | grep 3:on|awk '{print $1}'`;do chkconfig --level 3 $a off;done
-  tags:
-    - level
 
 - name: services enabled crond network rsyslog sshd sysstat
   service: name={{ item }} enabled=yes runlevel=3
@@ -40,28 +37,19 @@
     - rsyslog
     - sshd
     - sysstat
-  tags:
-    - levelup
 
 - name: 禁用selinux
   lineinfile: dest=/etc/selinux/config regexp=^SELINUX= line=SELINUX=disabled
-  tags:
-    - selinux
 
 - name: 调整文件描述符大小
   lineinfile: dest=/etc/security/limits.conf line='*       -       nofile  65536'
-  tags:
-    - limits
-- name: PS1
+
+- name: 环境变量设置
   lineinfile: dest=/etc/profile line="{{ item }}"
   with_items:
     - export PS1='\n\e[1;37m[\e[m\e[1;32m\u\\e[m\e[1;33m@\e[m\e[1;35m\H\e[m \e[4m`pwd`\e[m\e[1;37m]\e[m\e[1;36m\e[m\n\$'
     - "alias vi='vim'"
     - "alias grep='grep --colour'"
-  tags:
-    - PS1
 
 - name: config vimrc
   copy: src=vimrc dest=/root/.vimrc
-  tags:
-    - vimrc
