@@ -22,6 +22,7 @@
     - parted
     - vim
     - libselinux-python
+    - rsync
 
 - name: 时间同步
   cron: name="sync time" minute="*/5" job="/usr/sbin/ntpdate time.windows.com > /dev/null 2>&1"
@@ -37,6 +38,9 @@
     - rsyslog
     - sshd
     - sysstat
+
+- name: action to stop service iptables
+  service: name=iptables state=stopped
 
 - name: 禁用selinux
   lineinfile: dest=/etc/selinux/config regexp=^SELINUX= line=SELINUX=disabled
