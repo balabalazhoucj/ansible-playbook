@@ -1,0 +1,45 @@
+---
+- name: yum install ncurses-devel gcc-c++ cmake perl make bison
+  yum: name={{ item }} state=latest
+  with_items:
+    - ncurses-devel
+    - gcc-c++
+    - cmake
+    - perl
+    - make
+    - bison
+    - libaio
+
+- name: 解压缩安装文件
+  unarchive: src=mysql-{{ mysql_version }}.tar.gz dest=/tmp/
+
+- name: 创建mysql用户
+  user: name=mysql createhome=no shell=/bin/nologin
+
+- name: 创建mysql目录
+  file: path={{ install_path }} state=directory owner=mysql recurse=yes
+
+- name: 安装mysql-cmake
+  command: cmake . -DCMAKE_INSTALL_PREFIX="{{ install_path }}" -DENABLED_LOCAL_INFILE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DWITH_EXTRA_CHARSETS_STRING=all -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci -DMYSQL_USER=mysql chdir=/tmp/mysql-{{ mysql_version }}/
+
+- name: 安装mysql-make    
+  command: make chdir=/tmp/mysql-{{ mysql_version }}/
+
+- name: 安装mysql-make install
+  command:  make install chdir=/tmp/mysql-{{ mysql_version }}/
+
+- name: 复制my.cnf
+  copy: src=my.cnf dest=/etc/
+  notify: restart mysqld
+
+- name: 初始化
+  command: ./mysql_install_db --basedir={{ install_path }} --user=mysql chdir={{ install_path }}/scripts/
+
+- name: 复制启动文件
+  file: src={{ install_path }}/support-files/mysql.server dest=/etc/init.d/mysqld state=link
+
+- name: link
+  shell: ln -s {{ install_path }}/bin/* /usr/bin/
+
+- name: 启动数据库
+  service: name=mysqld state=started enabled=yes runlevel=3
