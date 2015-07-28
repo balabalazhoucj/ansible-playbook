@@ -23,6 +23,8 @@
     - vim
     - libselinux-python
     - rsync
+    - wget
+    - unzip
 
 - name: 时间同步
   cron: name="sync time" minute="*/5" job="/usr/sbin/ntpdate time.windows.com > /dev/null 2>&1"
