@@ -45,7 +45,7 @@
   service: name=iptables state=stopped
 
 - name: 禁用selinux
-  lineinfile: dest=/etc/selinux/config regexp=^SELINUX= line=SELINUX=disabled
+  selinux: state=disabled
 
 - name: 调整文件描述符大小
   lineinfile: dest=/etc/security/limits.conf line='*       -       nofile  65536'
