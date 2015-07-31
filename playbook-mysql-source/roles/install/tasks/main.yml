@@ -37,9 +37,11 @@
 
 - name: 复制启动文件
   file: src={{ install_path }}/support-files/mysql.server dest=/etc/init.d/mysqld state=link
+  ignore_errors: True
 
 - name: link
   shell: ln -s {{ install_path }}/bin/* /usr/bin/
+  ignore_errors: True
 
 - name: 启动数据库
   service: name=mysqld state=started enabled=yes runlevel=3

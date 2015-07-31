@@ -1,4 +1,4 @@
 ---
-- hosts: 192.168.198.12
+- hosts: test
   roles:
     - install
