@@ -23,13 +23,13 @@
   command: cmake . -DCMAKE_INSTALL_PREFIX="{{ install_path }}" -DENABLED_LOCAL_INFILE=1 -DWITH_PARTITION_STORAGE_ENGINE=1 -DWITH_EXTRA_CHARSETS_STRING=all -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci -DMYSQL_USER=mysql chdir=/tmp/mysql-{{ mysql_version }}/
 
 - name: 安装mysql-make    
-  command: make chdir=/tmp/mysql-{{ mysql_version }}/
+  command: make -j{{ ansible_processor_cores }} chdir=/tmp/mysql-{{ mysql_version }}/
 
 - name: 安装mysql-make install
-  command:  make install chdir=/tmp/mysql-{{ mysql_version }}/
+  command:  make -j{{ ansible_processor_cores }} install chdir=/tmp/mysql-{{ mysql_version }}/
 
 - name: 复制my.cnf
-  copy: src=my.cnf dest=/etc/
+  template: src=my.cnf dest=/etc/
   notify: restart mysqld
 
 - name: 初始化
