@@ -28,20 +28,20 @@
 - name: 安装mysql-make install
   command:  make -j{{ ansible_processor_cores }} install chdir=/tmp/mysql-{{ mysql_version }}/
 
-- name: 复制my.cnf
-  template: src=my.cnf dest=/etc/
-  notify: restart mysqld
+#- name: 复制my.cnf
+#  template: src=my_master.cnf dest=/etc/my.cnf
+#  notify: restart mysqld
 
-- name: 初始化
-  command: ./mysql_install_db --basedir={{ install_path }} --user=mysql chdir={{ install_path }}/scripts/
+#- name: 初始化
+#  command: ./mysql_install_db --basedir={{ install_path }} --user=mysql --default-conf=/etc/my.cnf chdir={{ install_path }}/scripts/
 
-- name: 复制启动文件
-  file: src={{ install_path }}/support-files/mysql.server dest=/etc/init.d/mysqld state=link
-  ignore_errors: True
+#- name: 复制启动文件
+#  file: src={{ install_path }}/support-files/mysql.server dest=/etc/init.d/mysqld state=link
+#  ignore_errors: True
 
-- name: link
-  shell: ln -s {{ install_path }}/bin/* /usr/bin/
-  ignore_errors: True
+#- name: link
+#  shell: ln -s {{ install_path }}/bin/* /usr/bin/
+#  ignore_errors: True
 
-- name: 启动数据库
-  service: name=mysqld state=started enabled=yes runlevel=3
+#- name: 启动数据库
+#  service: name=mysqld state=started enabled=yes runlevel=3

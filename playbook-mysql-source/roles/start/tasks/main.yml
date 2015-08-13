@@ -1,0 +1,3 @@
+---
+#- name: 启动数据库
+#  service: name=mysqld state=started enabled=yes runlevel=3

@@ -1,4 +1,12 @@
 ---
-- hosts: test
+- hosts: master
   roles:
     - install
+    - config_master
+    - start
+
+- hosts: slave
+  roles:
+    - install
+    - config_slave
+    - start

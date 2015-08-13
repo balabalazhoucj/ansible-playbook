@@ -1,0 +1,45 @@
+[mysqld]
+
+
+## base setting
+server-id = {{ ansible_default_ipv4.address.split('.')[3] }}
+datadir={{ install_path }}
+socket={{ install_path }}/mysql.sock
+symbolic-links=0
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
+lower_case_table_names=0
+explicit_defaults_for_timestamp=true
+skip-external-locking
+skip-name-resolve
+skip-symbolic-links
+log_bin={{ install_path }}/mysql-bin
+
+
+## innodb setting
+#控制ibdate1大小
+innodb_file_per_table=1
+#避免双写入缓存
+innodb_flush_method=O_DIRECT
+innodb_file_per_table=1
+
+
+## gtids setting
+gtid_mode=on
+binlog-format=ROW
+log-slave-updates=true
+enforce-gtid-consistency=true
+report-port=3306
+master-info-repository=TABLE
+relay-log-info-repository=TABLE
+sync-master-info=1 
+report-host={{ ansible_default_ipv4.address }}
+relay-log=mysql-relay-bin
+
+
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+id-file=/var/run/mysqld/mysqld.pid
+
+[client]
+socket={{ install_path }}/mysql.sock
